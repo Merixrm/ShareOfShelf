@@ -1,0 +1,36 @@
+[project]
+name = "share-of-shelf"
+version = "0.1.0"
+description = "Retail shelf analytics: detect products with YOLOv8, identify SKUs with DINOv2 embeddings, and compute share of shelf."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11,<3.13"
+# Keep in sync with requirements.txt.
+dependencies = [
+    "torch==2.13.0",
+    "torchvision==0.28.0",
+    "transformers==5.16.1",
+    "ultralytics==8.4.138",
+    "scikit-learn==1.9.0",
+    "numpy==2.5.2",
+    "Pillow==12.3.0",
+]
+
+[project.optional-dependencies]
+# main.py --llm-fallback, src/unknown_beverage_pipeline.py
+llm = ["openai>=1.0", "ddgs"]
+# main.py --ocr, evaluate.py --ocr
+ocr = ["easyocr"]
+
+[dependency-groups]
+dev = ["pytest"]
+
+# `uv sync` installs the CPU build of torch (no CUDA download).
+[tool.uv.sources]
+torch = { index = "pytorch_cpu" }
+torchvision = { index = "pytorch_cpu" }
+
+[[tool.uv.index]]
+name = "pytorch_cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

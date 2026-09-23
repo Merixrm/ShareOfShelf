@@ -1,0 +1,46 @@
+# =============================================================================
+# ShareOfShelf: Python dependencies
+#
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# Python 3.11 or 3.12. The pins are the exact versions the project is run and
+# tested with. `pyproject.toml` declares the same set for `uv sync`, and
+# `env.yaml` installs this file into a conda environment. Keep all three in
+# sync when you change a version.
+#
+# CPU-only machines: the default torch wheel bundles CUDA and is several GB.
+# To get the much smaller CPU build, install torch from the CPU index FIRST,
+# then run the command above:
+#   pip install torch==2.13.0 torchvision==0.28.0 --index-url https://download.pytorch.org/whl/cpu
+# =============================================================================
+
+# ── Core pipeline ────────────────────────────────────────────────────────────
+# Needed by main.py, evaluate.py, report.py, shelf_api.py, tools/ and
+# src/cluster.py. Only packages the code imports directly are listed; their own
+# dependencies (huggingface-hub, tqdm, opencv, ...) are installed automatically.
+torch==2.13.0              # runs the DINOv2 / ResNet18 embedding models
+torchvision==0.28.0        # ResNet18 backbone and image transforms
+transformers==5.16.1       # loads facebook/dinov2-base (downloaded on first run, ~330 MB)
+ultralytics==8.4.138       # YOLOv8 product detector (models/best.pt)
+scikit-learn==1.9.0        # LDA / kNN matching heads, DBSCAN clustering, metrics
+numpy==2.5.2
+Pillow==12.3.0             # image loading, cropping and augmentation
+
+# ── Optional features ────────────────────────────────────────────────────────
+# Not needed for the core pipeline. Uncomment the ones you use, or install them
+# directly, e.g.  pip install "openai>=1.0"
+
+# main.py --llm-fallback (OpenAI vision second opinion; needs OPENAI_API_KEY) and
+# src/unknown_beverage_pipeline.py (GapGPT, OpenAI-compatible; needs GAPGPT_API_KEY)
+# openai>=1.0
+
+# src/unknown_beverage_pipeline.py: web search used to verify brand names
+# ddgs
+
+# main.py --ocr / evaluate.py --ocr: bilingual (Persian + English) label reading.
+# Downloads its own recognition models on first use.
+# easyocr
+
+# Test runner. Optional: tests/test_regressions.py also runs without it.
+# pytest

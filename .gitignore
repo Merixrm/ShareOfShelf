@@ -1,0 +1,98 @@
+# =============================================================================
+# ShareOfShelf: root .gitignore
+#
+# Rules for the Python pipeline and the data/ folder. The web app in
+# web-base44/ has its own .gitignore for Node, Vite and Base44 files.
+#
+# Check why a file is (or is not) ignored with:
+#   git check-ignore -v <path>
+# =============================================================================
+
+# ── Python bytecode and tool caches ──────────────────────────────────────────
+# Created automatically by Python, pytest, mypy, ruff and Jupyter.
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ── Virtual environments ─────────────────────────────────────────────────────
+# Each developer creates their own (see README "Installation").
+.venv/
+venv/
+env/
+myenv/
+
+# ── Secrets and local configuration ──────────────────────────────────────────
+# OPENAI_API_KEY, GAPGPT_API_KEY and similar must never be committed.
+.env
+.env.*
+
+# ── Editors and operating systems ────────────────────────────────────────────
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+# The repository root is not a Node project; only web-base44/ is. These catch
+# a stray `npm install` run from the root by mistake.
+node_modules/
+/package.json
+/package-lock.json
+
+# ── Model weights ────────────────────────────────────────────────────────────
+# Weights are ignored by default because they are large and usually
+# downloaded (DINOv2 comes from Hugging Face, EasyOCR fetches its own).
+# The one exception is the trained YOLO detector, which is committed so the
+# pipeline works straight after a clone.
+*.pt
+*.pth
+*.onnx
+*.safetensors
+!/models/best.pt
+
+# ── Caches ───────────────────────────────────────────────────────────────────
+# Includes the knowledge-base embedding caches
+# (data/knowledge_base/crops/object/.kb_cache*.pkl). They are rebuilt
+# automatically on the next run.
+*.pkl
+*.pickle
+
+# ── Logs and temporary files ─────────────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+
+# ── Ultralytics output ───────────────────────────────────────────────────────
+# YOLO writes here if it is ever called with save=True.
+runs/
+
+# ── data/: allow-list ────────────────────────────────────────────────────────
+# Every tool writes its output somewhere under data/, so data/ is ignored by
+# default and only the curated inputs are allowed back in:
+#
+#   committed                                  generated (ignored)
+#   ─────────                                  ───────────────────
+#   data/knowledge_base/  reference crops      data/<image-name>/  main.py output
+#   data/test_set/        evaluation crops     data/_uploads/      shelf_api.py uploads
+#   data/sample/          shelf photos         data/_api_sessions/ shelf_api.py crops
+#   data/clustering/ground_truth.csv           data/unknown_beverage_classification/
+#                                              data/test_set_staging/  build_test_set.py
+#                                              data/clustering/results/ etc.
+/data/*
+!/data/knowledge_base/
+!/data/test_set/
+!/data/sample/
+!/data/clustering/
+
+# Inside data/clustering/ only the hand-made ground truth is committed.
+# results/ holds copies of knowledge-base images and unknown_beverage_pool/
+# is an embedding cache; `python -m src.cluster` regenerates both.
+/data/clustering/*
+!/data/clustering/ground_truth.csv
