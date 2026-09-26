@@ -110,6 +110,15 @@ base44 link    # once per clone
 base44 dev     # starts the local Base44 backend and the Vite frontend together
 ```
 
+## run locally (standard mode)
+```bash
+cd web-base44
+npm install
+npm run dev
+```
+
+
+
 Open the frontend URL that `base44 dev` prints (usually `http://localhost:5173`).
 
 Things worth knowing:
@@ -122,10 +131,11 @@ Things worth knowing:
 - **`base44 dev` starts the frontend for you**, through `site.serveCommand` in
   `base44/config.jsonc`. Do not also run `npm run dev`: the second Vite server
   silently takes the next free port and you end up looking at the wrong one.
-- **`npm run dev` on its own** serves only the frontend, with no local Base44
-  backend (the console shows `[base44] Proxy not enabled` and Base44 `/api` calls
-  fail). The mock-data pages and Shelf Analysis still work, because Shelf Analysis
-  talks to `shelf_api.py` directly. Login needs a Base44 backend, either local
+- **`npm run dev` on its own** serves only the frontend, with no Base44 backend
+  (the terminal shows a `[base44] No Base44 backend configured` warning, which is
+  expected). The app detects this and skips Base44 auth and analytics, so every
+  page opens without signing in. The mock-data pages and Shelf Analysis work,
+  because Shelf Analysis talks to `shelf_api.py` directly. Login needs a Base44 backend, either local
   (`base44 dev`) or hosted (`base44 dev --remote`).
 - **The app must be published at least once before the UI loads under
   `base44 dev`.** The frontend starts by fetching app settings from the hosted app.
